@@ -1,6 +1,8 @@
-import exampleIconUrl from "./noun-paperclip-7598668-00449F.png";
 import "./style.css";
 
-document.body.innerHTML = `
-  <p>Example image asset: <img src="${exampleIconUrl}" class="icon" /></p>
-`;
+// Create a new button
+const button = document.createElement("button");
+button.textContent = "💵";
+
+// Add the button to the page
+document.body.appendChild(button);
