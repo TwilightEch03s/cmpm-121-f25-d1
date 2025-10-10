@@ -16,6 +16,7 @@ button.textContent = "Steal 💵";
 // Create upgrade button
 const upgrade_button = document.createElement("button");
 upgrade_button.textContent = "Upgrade ⬆️";
+upgrade_button.disabled = true;
 
 // On click increment
 button.addEventListener("click", () => {
@@ -34,16 +35,20 @@ function update(now: number) {
     accumulatedTime -= 1000;
     display.textContent = "Stolen Cash $" + money;
   }
+  if (money >= 10) {
+    upgrade_button.disabled = false;
+  }
   requestAnimationFrame(update);
 }
 requestAnimationFrame(update);
 
 //Upgrade
 upgrade_button.addEventListener("click", () => {
-  if (money >= 10) {
-    money -= 10;
-    rate += 1;
-    display.textContent = "Stolen Cash $" + money;
+  money -= 10;
+  rate += 1;
+  display.textContent = "Stolen Cash $" + money;
+  if (money < 10) {
+    upgrade_button.disabled = true;
   }
 });
 
