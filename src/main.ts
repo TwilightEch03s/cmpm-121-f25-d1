@@ -1,5 +1,7 @@
 import "./style.css";
 
+let lastTime = performance.now();
+let accumulatedTime = 0;
 let money = 0;
 
 // Create div
@@ -16,11 +18,20 @@ button.addEventListener("click", () => {
   display.textContent = "Stolen Cash $" + money;
 });
 
-//setInterval
-setInterval(() => {
-  money += 1;
-  display.textContent = "Stolen Cash $" + money;
-}, 1000);
+//requestAnimationFrame
+function update(now: number) {
+  const deltaTime = now - lastTime;
+  lastTime = now;
+  accumulatedTime += deltaTime;
+
+  while (accumulatedTime >= 1000) {
+    money += 1;
+    accumulatedTime -= 1000;
+    display.textContent = "Stolen Cash $" + money;
+  }
+  requestAnimationFrame(update);
+}
+requestAnimationFrame(update);
 
 // Add everything to the page
 document.body.appendChild(display);
