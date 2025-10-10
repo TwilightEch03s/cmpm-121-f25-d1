@@ -11,11 +11,11 @@ display.textContent = "Stolen Cash $" + money;
 
 // Create button
 const button = document.createElement("button");
-button.textContent = "⬆️";
+button.textContent = "Steal 💵";
 
 // Create upgrade button
 const upgrade_button = document.createElement("button");
-upgrade_button.textContent = "💵";
+upgrade_button.textContent = "Upgrade ⬆️";
 
 // On click increment
 button.addEventListener("click", () => {
