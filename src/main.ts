@@ -6,10 +6,7 @@ let money = 0;
 const display = document.createElement("div");
 display.textContent = "Stolen Cash $" + money;
 
-// Add div to browser
-document.body.appendChild(display);
-
-// Create a new button
+// Create button
 const button = document.createElement("button");
 button.textContent = "💵";
 
@@ -18,5 +15,6 @@ button.addEventListener("click", () => {
   display.textContent = "Stolen Cash $" + money;
 });
 
-// Add the button to the page
+// Add everything to the page
+document.body.appendChild(display);
 document.body.appendChild(button);
