@@ -11,13 +11,16 @@ let B_owned = 0;
 let C_owned = 0;
 
 // Upgrade costs and rates
-const A_cost = 10;
-const B_cost = 100;
-const C_cost = 1000;
+let A_cost = 10;
+let B_cost = 100;
+let C_cost = 1000;
 
 const A_rate = 0.1;
 const B_rate = 2.0;
 const C_rate = 50.0;
+
+// Each item gets 15% more expensive after purchase
+const PRICE_MULTIPLIER = 1.15;
 
 // Create displays
 const display = document.createElement("div");
@@ -66,6 +69,7 @@ upgradeA_button.addEventListener("click", () => {
     money -= A_cost;
     rate += A_rate;
     A_owned++;
+    A_cost *= PRICE_MULTIPLIER;
     updateDisplay();
   }
 });
@@ -75,6 +79,7 @@ upgradeB_button.addEventListener("click", () => {
     money -= B_cost;
     rate += B_rate;
     B_owned++;
+    B_cost *= PRICE_MULTIPLIER;
     updateDisplay();
   }
 });
@@ -84,6 +89,7 @@ upgradeC_button.addEventListener("click", () => {
     money -= C_cost;
     rate += C_rate;
     C_owned++;
+    C_cost *= PRICE_MULTIPLIER;
     updateDisplay();
   }
 });
