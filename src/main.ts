@@ -24,18 +24,12 @@ const PRICE_MULTIPLIER = 1.15;
 
 // Create displays
 const display = document.createElement("div");
-display.textContent = "Stolen Cash: $" + money;
-
 const rateDisplay = document.createElement("div");
-rateDisplay.textContent = `Rate: ${rate.toFixed(1)} units/sec`;
-
 const ownedDisplay = document.createElement("div");
-ownedDisplay.textContent =
-  `Upgrades owned → A: ${A_owned}, B: ${B_owned}, C: ${C_owned}`;
 
 // Create steal button
 const stealButton = document.createElement("button");
-stealButton.textContent = "Steal 💵";
+stealButton.textContent = "Steal Cash 💵";
 
 // Create upgrade buttons
 const upgradeA_button = document.createElement("button");
@@ -45,13 +39,14 @@ const upgradeC_button = document.createElement("button");
 // Update display text
 function updateDisplay() {
   display.textContent = "Stolen Cash: $" + money.toFixed(1);
-  rateDisplay.textContent = `Rate: ${rate.toFixed(1)} units/sec`;
+  rateDisplay.textContent = `Reinforcements Help Rate: ${
+    rate.toFixed(1)
+  } units/sec`;
   ownedDisplay.textContent =
-    `Upgrades owned → A: ${A_owned}, B: ${B_owned}, C: ${C_owned}`;
-
-  upgradeA_button.textContent = `A ($${A_cost}) ⬆️`;
-  upgradeB_button.textContent = `B($${B_cost}) ⬆️`;
-  upgradeC_button.textContent = `C ($${C_cost}) ⬆️`;
+    `Upgrades Owned: Bag Upgrades: ${A_owned}, Van Upgrades: ${B_owned}, Truck Upgrades: ${C_owned}`;
+  upgradeA_button.textContent = `💰 Bag Upgrade: ($${A_cost}) ⬆️`;
+  upgradeB_button.textContent = `🚐 Van Upgrade: ($${B_cost}) ⬆️`;
+  upgradeC_button.textContent = `🚚 Truck Upgrade: ($${C_cost}) ⬆️`;
 
   upgradeA_button.disabled = money < A_cost;
   upgradeB_button.disabled = money < B_cost;
