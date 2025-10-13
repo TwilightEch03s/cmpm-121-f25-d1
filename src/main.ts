@@ -1,21 +1,54 @@
 import "./style.css";
 
-// Upgrade upgrade structure
+// Upgrade structure
 interface upgrades {
   name: string;
   cost: number;
   rate: number;
   owned: number;
+  description: string;
 }
 
 // Price increase rate
 const PRICE_MULTIPLIER = 1.15;
 
-// Data-driven upgrades
+// Data-driven upgrades (5 items now)
 const availableItems: upgrades[] = [
-  { name: "💰 Bag", cost: 10, rate: 1.0, owned: 0 },
-  { name: "🚐 Van", cost: 100, rate: 2.0, owned: 0 },
-  { name: "🚚 Truck", cost: 1000, rate: 50.0, owned: 0 },
+  {
+    name: "💰 Bag",
+    cost: 10,
+    rate: 1.0,
+    owned: 0,
+    description: "A small bag to store cash.",
+  },
+  {
+    name: "🚙 SUV",
+    cost: 100,
+    rate: 2.0,
+    owned: 0,
+    description: "A SUV to carry more cash.",
+  },
+  {
+    name: "🚐 Van",
+    cost: 1000,
+    rate: 50.0,
+    owned: 0,
+    description: "A van for massive heists.",
+  },
+  {
+    name: "🚚 Truck",
+    cost: 5000,
+    rate: 200.0,
+    owned: 0,
+    description: "A truck to carry a ton of stolen cash.",
+  },
+  {
+    name: "🚂 Train",
+    cost: 20000,
+    rate: 1000.0,
+    owned: 0,
+    description: "A train that brings cash in bulk.",
+  },
 ];
 
 // Game state
@@ -40,7 +73,9 @@ upgradesContainer.classList.add("upgrades-container");
 const upgradeButtons: HTMLButtonElement[] = [];
 for (const item of availableItems) {
   const btn = document.createElement("button");
-  btn.textContent = `${item.name} Upgrade ($${item.cost.toFixed(2)}) ⬆️`;
+  btn.textContent = `${item.name} Upgrade ($${
+    item.cost.toFixed(2)
+  }) ⬆️ - ${item.description}`;
   btn.disabled = true;
   upgradeButtons.push(btn);
   upgradesContainer.appendChild(btn);
@@ -49,9 +84,7 @@ for (const item of availableItems) {
 // Update all UI text
 function updateDisplay() {
   display.textContent = `Stolen Cash: $${money.toFixed(2)}`;
-  rateDisplay.textContent = `Reinforcements Help Rate: ${
-    rate.toFixed(2)
-  } units/sec`;
+  rateDisplay.textContent = `Money Stealing Rate: ${rate.toFixed(2)} units/sec`;
 
   // Show owned counts dynamically
   ownedDisplay.textContent = "Upgrades Owned: " +
@@ -61,7 +94,9 @@ function updateDisplay() {
   for (let i = 0; i < availableItems.length; i++) {
     const item = availableItems[i];
     const btn = upgradeButtons[i];
-    btn.textContent = `${item.name} Upgrade ($${item.cost.toFixed(2)}) ⬆️`;
+    btn.textContent = `${item.name} Upgrade ($${
+      item.cost.toFixed(2)
+    }) ⬆️ - ${item.description}`;
     btn.disabled = money < item.cost;
   }
 }
@@ -69,7 +104,7 @@ function updateDisplay() {
 // Handle stealing manually
 stealButton.addEventListener("click", () => {
   money += 1;
-  money = parseFloat(money.toFixed(2)); // keep consistent
+  money = parseFloat(money.toFixed(2));
   updateDisplay();
 });
 
@@ -80,8 +115,8 @@ for (let i = 0; i < availableItems.length; i++) {
   btn.addEventListener("click", () => {
     if (money >= item.cost) {
       money -= item.cost;
-      money = parseFloat(money.toFixed(2)); // keep consistent
-      rate = parseFloat((rate + item.rate).toFixed(2)); // precise increments
+      money = parseFloat(money.toFixed(2));
+      rate = parseFloat((rate + item.rate).toFixed(2));
       item.owned++;
       item.cost *= PRICE_MULTIPLIER;
       updateDisplay();
@@ -97,7 +132,7 @@ function update(now: number) {
 
   while (accumulatedTime >= 1000) {
     money += rate;
-    money = parseFloat(money.toFixed(2)); // keep increments consistent
+    money = parseFloat(money.toFixed(2));
     accumulatedTime -= 1000;
   }
 
