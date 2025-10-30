@@ -1,7 +1,8 @@
 import "./style.css";
 
 // Upgrade structure
-interface upgrades {
+// ===== TYPES =====
+interface Upgrade {
   name: string;
   cost: number;
   rate: number;
@@ -9,11 +10,26 @@ interface upgrades {
   description: string;
 }
 
+// ===== DATA =====
 // Price increase rate
 const PRICE_MULTIPLIER = 1.15;
 
+// ===== GAME STATE =====
+let money = 0;
+let rate = 0;
+let lastTime = performance.now();
+let accumulatedTime = 0;
+
+// ===== UI ELEMENTS =====
+const display = document.createElement("div");
+const rateDisplay = document.createElement("div");
+const ownedDisplay = document.createElement("div");
+
+const stealButton = document.createElement("button");
+stealButton.textContent = "Steal Cash 💵";
+
 // Data-driven upgrades (5 items now)
-const availableItems: upgrades[] = [
+const UPGRADE_DATABASE: Upgrade[] = [
   {
     name: "💰 Bag",
     cost: 10,
@@ -51,48 +67,55 @@ const availableItems: upgrades[] = [
   },
 ];
 
-// Game state
-let money = 0;
-let rate = 0;
-let lastTime = performance.now();
-let accumulatedTime = 0;
-
-// UI elements
-const display = document.createElement("div");
-const rateDisplay = document.createElement("div");
-const ownedDisplay = document.createElement("div");
-
-const stealButton = document.createElement("button");
-stealButton.textContent = "Steal Cash 💵";
-
-// Container for upgrades
+// ===== UPGRADE BUTTONS =====
 const upgradesContainer = document.createElement("div");
 upgradesContainer.classList.add("upgrades-container");
 
-// Create a button for each available item
-const upgradeButtons: HTMLButtonElement[] = [];
-for (const item of availableItems) {
-  const btn = document.createElement("button");
-  btn.textContent = `${item.name} Upgrade ($${
-    item.cost.toFixed(2)
-  }) ⬆️ - ${item.description}`;
-  btn.disabled = true;
-  upgradeButtons.push(btn);
-  upgradesContainer.appendChild(btn);
+//Create upgrade buttons dynamically
+function createUpgradeButtons(
+  container: HTMLElement,
+  upgrades: Upgrade[],
+  onPurchase: (upgrade: Upgrade) => void,
+): HTMLButtonElement[] {
+  return upgrades.map((upgrade) => {
+    const btn = document.createElement("button");
+    btn.textContent = `${upgrade.name} Upgrade ($${
+      upgrade.cost.toFixed(2)
+    }) 🎒 - ${upgrade.description}`;
+    btn.disabled = money < upgrade.cost;
+    btn.addEventListener("click", () => onPurchase(upgrade));
+    container.appendChild(btn);
+    return btn;
+  });
 }
 
-// Update all UI text
+const upgradeButtons = createUpgradeButtons(
+  upgradesContainer,
+  UPGRADE_DATABASE,
+  (upgrade) => {
+    if (money >= upgrade.cost) {
+      money -= upgrade.cost;
+      money = parseFloat(money.toFixed(2));
+      rate = parseFloat((rate + upgrade.rate).toFixed(2));
+      upgrade.owned++;
+      upgrade.cost *= 1.15;
+      updateDisplay();
+    }
+  },
+);
+
+// ===== UPDATE FUNCTION =====
 function updateDisplay() {
   display.textContent = `Stolen Cash: $${money.toFixed(2)}`;
   rateDisplay.textContent = `Money Stealing Rate: ${rate.toFixed(2)} units/sec`;
 
   // Show owned counts dynamically
   ownedDisplay.textContent = "Upgrades Owned: " +
-    availableItems.map((item) => `${item.name}: ${item.owned}`).join(", ");
+    UPGRADE_DATABASE.map((item) => `${item.name}: ${item.owned}`).join(", ");
 
   // Update each upgrade button text + disable state
-  for (let i = 0; i < availableItems.length; i++) {
-    const item = availableItems[i];
+  for (let i = 0; i < UPGRADE_DATABASE.length; i++) {
+    const item = UPGRADE_DATABASE[i];
     const btn = upgradeButtons[i];
     btn.textContent = `${item.name} Upgrade ($${
       item.cost.toFixed(2)
@@ -101,6 +124,7 @@ function updateDisplay() {
   }
 }
 
+// ===== EVENT LISTENERS =====
 // Handle stealing manually
 stealButton.addEventListener("click", () => {
   money += 1;
@@ -109,8 +133,8 @@ stealButton.addEventListener("click", () => {
 });
 
 // Handle all upgrade buttons using loop logic
-for (let i = 0; i < availableItems.length; i++) {
-  const item = availableItems[i];
+for (let i = 0; i < UPGRADE_DATABASE.length; i++) {
+  const item = UPGRADE_DATABASE[i];
   const btn = upgradeButtons[i];
   btn.addEventListener("click", () => {
     if (money >= item.cost) {
@@ -124,7 +148,7 @@ for (let i = 0; i < availableItems.length; i++) {
   });
 }
 
-// Passive income update loop
+// ===== GAME LOOP =====
 function update(now: number) {
   const deltaTime = now - lastTime;
   lastTime = now;
@@ -139,9 +163,9 @@ function update(now: number) {
   updateDisplay();
   requestAnimationFrame(update);
 }
-
 requestAnimationFrame(update);
 
+// ===== INITIALIZATION =====
 // Add all UI elements to the page
 document.body.appendChild(display);
 document.body.appendChild(rateDisplay);
