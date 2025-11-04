@@ -1,5 +1,245 @@
-.icon {
-  width: 64px;
-  vertical-align: top;
-  border: 1px solid salmon;
+/* Body and UI */
+/* Inspired by: benho612, https://benho612.github.io/CMPM1212-D1-Assignement/*/
+/* Inspired by: mlau16, https://mlau16.github.io/cmpm-121-f25-d1/*/
+
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800&display=swap");
+
+body {
+  font-family: "Rubik", sans-serif;
+  background: radial-gradient(circle at top, #0f2027, #203a43, #2c5364);
+  color: #f1f1f1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  min-height: 100vh;
+  margin: 0;
+  padding: 2rem;
+  text-align: center;
+}
+
+h1 {
+  font-size: 2rem;
+  color: #ffd700;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+}
+
+/* Info Boxes */
+.info-box {
+  background: rgba(20, 30, 35, 0.8);
+  border: 2px solid #00ff88;
+  border-radius: 15px;
+  padding: 1rem 1.5rem;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+  backdrop-filter: blur(5px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.info-box:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 25px rgba(0, 255, 136, 0.5);
+}
+
+.info-box h2 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  color: #ffd700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
+.info-box p {
+  font-size: 1.1rem;
+  color: #aaffcc;
+  text-shadow: 0 0 6px rgba(0, 255, 136, 0.4);
+  margin: 0.25rem 0;
+}
+
+.info-box span {
+  color: #00ff88;
+  font-weight: 700;
+  text-shadow: 0 0 8px #00ff88;
+}
+
+.info-row {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 1.5rem;
+  width: 95%; /* wider row */
+  max-width: 1200px;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.info-row .info-box {
+  flex: 1;
+  min-width: 300px;
+}
+
+/* Money Display */
+div:first-of-type {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #00ff88;
+  text-shadow: 0 0 8px #00ff88;
+  margin-top: 1rem;
+}
+
+/* Buttons */
+button {
+  background: linear-gradient(135deg, #222, #333);
+  color: #fff;
+  border: 2px solid #00ff88;
+  border-radius: 12px;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
+  margin: 10px;
+}
+
+button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #00ff88, #00c473);
+  color: #000;
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.8);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Steal Cash Button */
+button:first-of-type {
+  background: linear-gradient(135deg, #1a1a1a, #333);
+  border: 3px solid #ffd700;
+  color: #ffd700;
+  font-size: 1.5rem;
+  padding: 1.2rem 2.5rem;
+  margin-top: 1rem;
+  border-radius: 50px;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+button:first-of-type::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0)
+  );
+  transform: skewX(-25deg);
+  transition: left 0.5s ease-in-out;
+}
+
+button:first-of-type:hover::after {
+  left: 130%;
+}
+
+button:first-of-type:active {
+  transform: scale(0.95);
+}
+
+/* Money Float Animation */
+/* Inspired by: mlau16, https://mlau16.github.io/cmpm-121-f25-d1/*/
+@keyframes money-pop {
+  0% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5) translateY(-80px);
+    opacity: 0;
+  }
+}
+
+.money-float {
+  position: absolute;
+  font-size: 2rem;
+  color: #00ff88;
+  pointer-events: none;
+  animation: money-pop 1s ease-out forwards;
+  text-shadow: 0 0 8px #00ff88;
+}
+
+/* Upgrades */
+.upgrades-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+  width: 80%;
+  max-width: 600px;
+  margin-top: 2rem;
+}
+
+.upgrades-container button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #111, #222);
+  border: 1px solid #00ff88;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  text-align: left;
+  color: #ffffff;
+}
+
+.upgrades-container button span {
+  color: #ffffff;
+}
+
+.upgrades-container button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #00ff88, #00c473);
+  color: #000;
+}
+
+/* Upgrade Popup Animation */
+.upgrade-popup {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%) scale(1);
+  background: rgba(0, 255, 136, 0.1);
+  border: 2px solid #00ff88;
+  border-radius: 20px;
+  padding: 1rem 2rem;
+  font-size: 1.5rem;
+  color: #00ff88;
+  text-shadow: 0 0 12px #00ff88, 0 0 24px #00ffaa;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+  animation: upgrade-float 1.5s ease-out forwards;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+@keyframes upgrade-float {
+  0% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-30px) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) translateY(-80px) scale(0.8);
+    opacity: 0;
+  }
 }

@@ -1,6 +1,5 @@
 import "./style.css";
 
-// Upgrade structure
 // ===== TYPES =====
 interface Upgrade {
   name: string;
@@ -11,7 +10,6 @@ interface Upgrade {
 }
 
 // ===== DATA =====
-// Price increase rate
 const PRICE_MULTIPLIER = 1.15;
 
 // ===== GAME STATE =====
@@ -22,13 +20,28 @@ let accumulatedTime = 0;
 
 // ===== UI ELEMENTS =====
 const display = document.createElement("div");
-const rateDisplay = document.createElement("div");
-const ownedDisplay = document.createElement("div");
+const rateBox = document.createElement("div");
+rateBox.classList.add("info-box");
+const rateTitle = document.createElement("h2");
+rateTitle.textContent = "💸 Stealing Rate";
+const rateValue = document.createElement("p");
+rateValue.innerHTML = `<span>${rate.toFixed(2)}</span> units/sec`;
+rateBox.append(rateTitle, rateValue);
+
+const ownedBox = document.createElement("div");
+ownedBox.classList.add("info-box");
+const ownedTitle = document.createElement("h2");
+ownedTitle.textContent = "🔧 Upgrades Owned";
+const ownedValue = document.createElement("p");
+
+const infoRow = document.createElement("div");
+infoRow.classList.add("info-row");
+infoRow.append(rateBox, ownedBox);
 
 const stealButton = document.createElement("button");
 stealButton.textContent = "Steal Cash 💵";
 
-// Data-driven upgrades (5 items now)
+// ===== UPGRADE DATA =====
 const UPGRADE_DATABASE: Upgrade[] = [
   {
     name: "💰 Bag",
@@ -67,11 +80,16 @@ const UPGRADE_DATABASE: Upgrade[] = [
   },
 ];
 
+ownedValue.innerHTML = UPGRADE_DATABASE.map(
+  (u) => `${u.name}: <span>${u.owned}</span>`,
+).join(" | ");
+ownedBox.append(ownedTitle, ownedValue);
+
 // ===== UPGRADE BUTTONS =====
 const upgradesContainer = document.createElement("div");
 upgradesContainer.classList.add("upgrades-container");
 
-//Create upgrade buttons dynamically
+// Create upgrade buttons dynamically
 function createUpgradeButtons(
   container: HTMLElement,
   upgrades: Upgrade[],
@@ -80,10 +98,15 @@ function createUpgradeButtons(
   return upgrades.map((upgrade) => {
     const btn = document.createElement("button");
     btn.textContent = `${upgrade.name} Upgrade ($${
-      upgrade.cost.toFixed(2)
+      upgrade.cost.toFixed(
+        2,
+      )
     }) 🎒 - ${upgrade.description}`;
     btn.disabled = money < upgrade.cost;
-    btn.addEventListener("click", () => onPurchase(upgrade));
+    btn.addEventListener("click", () => {
+      onPurchase(upgrade);
+      showUpgradePopup(upgrade.name);
+    });
     container.appendChild(btn);
     return btn;
   });
@@ -98,7 +121,7 @@ const upgradeButtons = createUpgradeButtons(
       money = parseFloat(money.toFixed(2));
       rate = parseFloat((rate + upgrade.rate).toFixed(2));
       upgrade.owned++;
-      upgrade.cost *= 1.15;
+      upgrade.cost *= PRICE_MULTIPLIER;
       updateDisplay();
     }
   },
@@ -107,32 +130,43 @@ const upgradeButtons = createUpgradeButtons(
 // ===== UPDATE FUNCTION =====
 function updateDisplay() {
   display.textContent = `Stolen Cash: $${money.toFixed(2)}`;
-  rateDisplay.textContent = `Money Stealing Rate: ${rate.toFixed(2)} units/sec`;
 
-  // Show owned counts dynamically
-  ownedDisplay.textContent = "Upgrades Owned: " +
-    UPGRADE_DATABASE.map((item) => `${item.name}: ${item.owned}`).join(", ");
+  rateValue.innerHTML = `<span>${rate.toFixed(2)}</span> units/sec`;
+  ownedValue.innerHTML = UPGRADE_DATABASE.map(
+    (u) => `${u.name}: <span>${u.owned}</span>`,
+  ).join(" | ");
 
-  // Update each upgrade button text + disable state
   for (let i = 0; i < UPGRADE_DATABASE.length; i++) {
     const item = UPGRADE_DATABASE[i];
     const btn = upgradeButtons[i];
     btn.textContent = `${item.name} Upgrade ($${
-      item.cost.toFixed(2)
+      item.cost.toFixed(
+        2,
+      )
     }) ⬆️ - ${item.description}`;
     btn.disabled = money < item.cost;
   }
 }
 
 // ===== EVENT LISTENERS =====
-// Handle stealing manually
-stealButton.addEventListener("click", () => {
+stealButton.addEventListener("click", (e) => {
   money += 1;
   money = parseFloat(money.toFixed(2));
   updateDisplay();
+
+  const float = document.createElement("div");
+  float.textContent = "+$1";
+  float.classList.add("money-float");
+  document.body.appendChild(float);
+
+  const rect = (e.target as HTMLElement).getBoundingClientRect();
+  float.style.left = rect.left + rect.width / 2 + "px";
+  float.style.top = rect.top + "px";
+
+  setTimeout(() => float.remove(), 1000);
 });
 
-// Handle all upgrade buttons using loop logic
+// Manual upgrade listener
 for (let i = 0; i < UPGRADE_DATABASE.length; i++) {
   const item = UPGRADE_DATABASE[i];
   const btn = upgradeButtons[i];
@@ -144,8 +178,23 @@ for (let i = 0; i < UPGRADE_DATABASE.length; i++) {
       item.owned++;
       item.cost *= PRICE_MULTIPLIER;
       updateDisplay();
+      showUpgradePopup(item.name);
     }
   });
+}
+
+// ===== FANCY UPGRADE POPUP =====
+function showUpgradePopup(upgradeName: string): void {
+  const popup = document.createElement("div");
+  popup.classList.add("upgrade-popup");
+  popup.innerHTML = `✨ ${upgradeName} Upgraded! ✨`;
+  document.body.appendChild(popup);
+
+  popup.style.left = "50%";
+  popup.style.top = "20%";
+  popup.style.transform = "translateX(-50%)";
+
+  setTimeout(() => popup.remove(), 1500);
 }
 
 // ===== GAME LOOP =====
@@ -166,10 +215,8 @@ function update(now: number) {
 requestAnimationFrame(update);
 
 // ===== INITIALIZATION =====
-// Add all UI elements to the page
 document.body.appendChild(display);
-document.body.appendChild(rateDisplay);
-document.body.appendChild(ownedDisplay);
+document.body.appendChild(infoRow);
 document.body.appendChild(stealButton);
 document.body.appendChild(upgradesContainer);
 
